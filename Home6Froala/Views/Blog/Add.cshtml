@@ -51,31 +51,51 @@
     @Styles.Render("~/Content/froala")
 }
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    @*@Scripts.Render("~/bundles/jqueryval")*@
     @Scripts.Render("~/bundles/froala")
     <script>
         $(function () {
-            $('.html-editor-autoinit')
-                //https://www.froala.com/wysiwyg-editor/docs/concepts/image/upload
-                .froalaEditor({
-                    //https://stackoverflow.com/questions/40873970/cant-upload-image-to-local-server-with-froala-editor
-                    imageUploadURL: '/api/values/uploadimage',
-                    imageUploadMethod: 'POST',
-                    imageMaxSize: 5 * 1024 * 1024,
-                    imageAllowedTypes: ['jpeg', 'jpg', 'png']
-                })
-                .on('froalaEditor.image.beforeUpload', function (e, editor, images) {
-                    //https://wysiwyg-editor.froala.help/hc/en-us/articles/115000555949-Can-I-insert-images-as-base64-
-                    if (images.length) {
-                        var reader = new FileReader();
-                        reader.onload = function (e) {
-                            var result = e.target.result;
-                            editor.image.insert(result, null, null, editor.image.get());
-                        };
-                        // Read image as base64.
-                        reader.readAsDataURL(images[0]);
-                    }
-                });               
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:7688/api/uploadimage",
+                // The key needs to match your method's input parameter (case-sensitive).
+                //data: { file: "Semen" },
+                data: '{"file":"json"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
+                success: function (data) { alert(data); },
+                failure: function (errMsg) {
+                    alert(errMsg);
+                }
+            });
+            //$.post("http://localhost:7688/api/uploadimage",
+            //    {
+            //        file: "Donald Duck"
+            //    },
+            //    function () {
+            //        alert("Data: ");
+            //    });
+            //$('.html-editor-autoinit')
+            //    //https://www.froala.com/wysiwyg-editor/docs/concepts/image/upload
+            //    .froalaEditor({
+            //        //https://stackoverflow.com/questions/40873970/cant-upload-image-to-local-server-with-froala-editor
+            //        imageUploadURL: '/api/values/uploadimage',
+            //        imageUploadMethod: 'POST',
+            //        imageMaxSize: 5 * 1024 * 1024,
+            //        imageAllowedTypes: ['jpeg', 'jpg', 'png']
+            //    })
+            //    .on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+            //        //https://wysiwyg-editor.froala.help/hc/en-us/articles/115000555949-Can-I-insert-images-as-base64-
+            //        if (images.length) {
+            //            var reader = new FileReader();
+            //            reader.onload = function (e) {
+            //                var result = e.target.result;
+            //                editor.image.insert(result, null, null, editor.image.get());
+            //            };
+            //            // Read image as base64.
+            //            reader.readAsDataURL(images[0]);
+            //        }
+            //    });               
         });        
     </script>
 }

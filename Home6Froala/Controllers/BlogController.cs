@@ -13,6 +13,7 @@ namespace Home6Froala.Controllers
         {
             return View();
         }
+
         public ActionResult Add()
         {
             return View();
