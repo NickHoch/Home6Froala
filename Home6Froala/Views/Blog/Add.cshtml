@@ -57,17 +57,25 @@
         $(function () {
             $.ajax({
                 type: "POST",
-                url: "http://localhost:7688/api/uploadimage",
-                // The key needs to match your method's input parameter (case-sensitive).
-                //data: { file: "Semen" },
-                data: '{"file":"json"}',
-                contentType: "application/json; charset=utf-8",
-                dataType: "jsonp",
+                //url: "http://localhost:6511/api/uploadimage",
+                url: "http://localhost:6511/api/values",
+                data: { file: "TEST" },
+                //contentType: "application/json; charset=utf-8",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                //dataType: "json",
                 success: function (data) { alert(data); },
                 failure: function (errMsg) {
                     alert(errMsg);
                 }
             });
+            //$.ajax({
+            //    type: "POST",
+            //    contentType: "application/x-www-form-urlencoded; charset=UTF-8", //this could be left out as it is the default content-type of an AJAX request
+            //    url: "http://localhost:6511/api/uploadimage",
+            //    data: "some@email.com"
+            //});
+            //corsAjax.post("http://localhost:6511/api/uploadimage",
+            //    JSON.stringify( { file: "TEST" } ));
             //$.post("http://localhost:7688/api/uploadimage",
             //    {
             //        file: "Donald Duck"
