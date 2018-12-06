@@ -54,20 +54,40 @@
     @*@Scripts.Render("~/bundles/jqueryval")*@
     @Scripts.Render("~/bundles/froala")
     <script>
+
         $(function () {
-            $.ajax({
-                type: "POST",
-                //url: "http://localhost:6511/api/uploadimage",
-                url: "http://localhost:6511/api/values",
-                data: { file: "TEST" },
-                //contentType: "application/json; charset=utf-8",
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                //dataType: "json",
-                success: function (data) { alert(data); },
-                failure: function (errMsg) {
-                    alert(errMsg);
-                }
-            });
+
+            //function send() {
+            //    var requestData = {
+            //        imagebase64: "hello"
+            //    }
+            //    $.ajax({
+            //        url: 'http://localhost:6511/api/uploadimage',
+            //        type: 'post',
+            //        dataType: 'json',
+            //        contentType: 'application/json',
+            //        success: function (data) {
+            //            alert(data.filePath);
+            //            //$('#target').html(data.msg);
+            //        },
+            //        data: JSON.stringify(requestData)
+            //    });
+            //}
+            //send();
+          
+            //$.ajax({
+            //    type: "POST",
+            //    //url: "http://localhost:6511/api/uploadimage",
+            //    url: "http://localhost:6511/api/uploadimage",
+            //    data: { file: "TEST" },
+            //    contentType: "application/json; charset=utf-8",
+            //    //contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            //    dataType: "json",
+            //    success: function (data) { alert(data); },
+            //    failure: function (errMsg) {
+            //        alert(errMsg);
+            //    }
+            //});
             //$.ajax({
             //    type: "POST",
             //    contentType: "application/x-www-form-urlencoded; charset=UTF-8", //this could be left out as it is the default content-type of an AJAX request
@@ -76,6 +96,7 @@
             //});
             //corsAjax.post("http://localhost:6511/api/uploadimage",
             //    JSON.stringify( { file: "TEST" } ));
+
             //$.post("http://localhost:7688/api/uploadimage",
             //    {
             //        file: "Donald Duck"
@@ -83,27 +104,79 @@
             //    function () {
             //        alert("Data: ");
             //    });
-            //$('.html-editor-autoinit')
-            //    //https://www.froala.com/wysiwyg-editor/docs/concepts/image/upload
-            //    .froalaEditor({
-            //        //https://stackoverflow.com/questions/40873970/cant-upload-image-to-local-server-with-froala-editor
-            //        imageUploadURL: '/api/values/uploadimage',
-            //        imageUploadMethod: 'POST',
-            //        imageMaxSize: 5 * 1024 * 1024,
-            //        imageAllowedTypes: ['jpeg', 'jpg', 'png']
-            //    })
-            //    .on('froalaEditor.image.beforeUpload', function (e, editor, images) {
-            //        //https://wysiwyg-editor.froala.help/hc/en-us/articles/115000555949-Can-I-insert-images-as-base64-
-            //        if (images.length) {
-            //            var reader = new FileReader();
-            //            reader.onload = function (e) {
-            //                var result = e.target.result;
-            //                editor.image.insert(result, null, null, editor.image.get());
-            //            };
-            //            // Read image as base64.
-            //            reader.readAsDataURL(images[0]);
-            //        }
-            //    });               
+            $('.html-editor-autoinit').froalaEditor()
+                .on('froalaEditor.image.beforeUpload', function (e, editor, files) {
+                    if (files.length) {
+                        // Create a File Reader.
+                        var reader = new FileReader();
+                        // Set the reader to insert images when they are loaded.
+                       
+
+                        reader.onload = function (e) {
+                            var requestData = {
+                                imagebase64: e.target.result
+                            }
+                            $.ajax({
+                                url: 'http://localhost:6511/api/uploadimage',
+                                type: 'post',
+                                data: JSON.stringify(requestData),
+                                dataType: 'json',
+                                contentType: 'application/json',
+                                success: function (data) {
+                                    alert(data.filePath);
+                                    //$('#target').html(data.msg);
+                                },
+                                error: function (data) {
+                                    alert(data.msg);
+                                }
+                            });
+                            //var result = e.target.result;
+                            //editor.image.insert(result, null, null, editor.image.get());
+                        };
+                        // Read image as base64.
+                        reader.readAsDataURL(files[0]);
+                    }
+                    editor.popups.hideAll();
+                   
+                    // Stop default upload chain.
+                    return false;
+                })
+
+
+                ////https://www.froala.com/wysiwyg-editor/docs/concepts/image/upload
+                //.froalaEditor({
+                //    //https://stackoverflow.com/questions/40873970/cant-upload-image-to-local-server-with-froala-editor
+                //    //imageUploadURL: '/api/values/uploadimage',
+                //    //imageUploadMethod: 'POST',
+                //    //imageMaxSize: 5 * 1024 * 1024,
+                //    //imageAllowedTypes: ['jpeg', 'jpg', 'png']
+                //})
+                //.on('froalaEditor.image.beforeUpload', function (e, editor, images) {
+                //    //https://wysiwyg-editor.froala.help/hc/en-us/articles/115000555949-Can-I-insert-images-as-base64-
+                //    if (images.length) {
+                //        var reader = new FileReader();
+                //        reader.onload = function (e) {
+                //            var result = e.target.result;
+                //            editor.image.insert(result, null, null, editor.image.get());
+                //        };
+                //        // Read image as base64.
+                //        //reader.readAsDataURL(images[0]);
+                //        var requestData = {
+                //            imagebase64: reader.readAsDataURL(images[0])
+                //        }
+                //        $.ajax({
+                //            url: 'http://localhost:6511/api/uploadimage',
+                //            type: 'POST',
+                //            dataType: 'json',
+                //            contentType: 'application/json',
+                //            success: function (data) {
+                //                alert(data.filePath);
+                //                //$('#target').html(data.msg);
+                //            },
+                //            data: JSON.stringify(requestData)
+                //        });
+                //    }
+                //});               
         });        
     </script>
 }
